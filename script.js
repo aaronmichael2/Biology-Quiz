@@ -8,7 +8,8 @@ const quizQuestions = [
       d: "Frameshift"
     },
     correctAnswer: "c",
-    explanation: "A substitution mutation involves the replacement of one nucleotide base with another, which may result in a different amino acid in the protein sequence."
+    explanation: "A substitution mutation involves the replacement of one nucleotide base with another, which may result in a different amino acid in the protein sequence.",
+    dotPoint: "6.1.1 - Types of mutations"
   },
   {
     question: "What is the role of restriction enzymes in recombinant DNA technology?",
@@ -19,7 +20,8 @@ const quizQuestions = [
       d: "To insert DNA into host cells"
     },
     correctAnswer: "b",
-    explanation: "Restriction enzymes recognize specific DNA sequences and cut the DNA at these sites, allowing for the manipulation and recombination of DNA fragments."
+    explanation: "Restriction enzymes recognize specific DNA sequences and cut the DNA at these sites, allowing for the manipulation and recombination of DNA fragments.",
+    dotPoint: "6.2.3 - Recombinant DNA technology"
   },
   {
     question: "Which method is commonly used to amplify small amounts of DNA for analysis?",
@@ -30,7 +32,8 @@ const quizQuestions = [
       d: "Southern blotting"
     },
     correctAnswer: "b",
-    explanation: "Polymerase Chain Reaction (PCR) is a technique used to make millions of copies of a specific DNA segment, allowing for further analysis."
+    explanation: "Polymerase Chain Reaction (PCR) is a technique used to make millions of copies of a specific DNA segment, allowing for further analysis.",
+    dotPoint: "6.2.4 - DNA amplification"
   },
   {
     question: "Which of the following is a method by which bacteria can gain new genetic material?",
@@ -41,7 +44,8 @@ const quizQuestions = [
       d: "Meiosis"
     },
     correctAnswer: "c",
-    explanation: "Transduction involves the transfer of DNA from one bacterium to another via a bacteriophage (a virus that infects bacteria)."
+    explanation: "Transduction involves the transfer of DNA from one bacterium to another via a bacteriophage (a virus that infects bacteria).",
+    dotPoint: "6.3.1 - Genetic variation in bacteria"
   },
   {
     question: "What is the purpose of gene therapy?",
@@ -52,7 +56,8 @@ const quizQuestions = [
       d: "To analyze the function of a specific gene",
     },
     correctAnswer: "b",
-    explanation: "Gene therapy aims to treat or prevent diseases by inserting a normal copy of a gene into cells to compensate for a defective or malfunctioning gene."
+    explanation: "Gene therapy aims to treat or prevent diseases by inserting a normal copy of a gene into cells to compensate for a defective or malfunctioning gene.",
+    dotPoint: "6.4.2 - Gene therapy"
   },
   {
     question: "What type of mutation is caused by the addition or deletion of a base pair in DNA?",
@@ -63,7 +68,8 @@ const quizQuestions = [
       d: "Point mutation"
     },
     correctAnswer: "c",
-    explanation: "A frameshift mutation occurs when nucleotide bases are added or deleted from the DNA sequence, altering the reading frame and potentially changing every amino acid coded for after the mutation."
+    explanation: "A frameshift mutation occurs when nucleotide bases are added or deleted from the DNA sequence, altering the reading frame and potentially changing every amino acid coded for after the mutation.",
+    dotPoint: "6.1.2 - Frameshift mutations"
   },
   {
     question: "Which term describes the use of CRISPR-Cas9 technology in gene editing?",
@@ -74,7 +80,8 @@ const quizQuestions = [
       d: "Gene silencing"
     },
     correctAnswer: "b",
-    explanation: "CRISPR-Cas9 technology allows for precise gene knockout, where specific genes are targeted and deactivated, or edited, to study their function or treat genetic diseases."
+    explanation: "CRISPR-Cas9 technology allows for precise gene knockout, where specific genes are targeted and deactivated, or edited, to study their function or treat genetic diseases.",
+    dotPoint: "6.2.5 - CRISPR-Cas9 technology"
   },
   {
     question: "Which of the following is NOT a source of genetic variation in populations?",
@@ -85,11 +92,50 @@ const quizQuestions = [
       d: "Mitosis"
     },
     correctAnswer: "d",
-    explanation: "Mitosis is a process of cell division that results in two identical daughter cells, and it does not contribute to genetic variation like meiosis or mutations."
+    explanation: "Mitosis is a process of cell division that results in two identical daughter cells, and it does not contribute to genetic variation like meiosis or mutations.",
+    dotPoint: "6.3.2 - Sources of genetic variation"
+  },
+  // Additional questions
+  {
+    question: "What technique is used to separate DNA fragments by size?",
+    answers: {
+      a: "Polymerase Chain Reaction (PCR)",
+      b: "Gel electrophoresis",
+      c: "Cloning",
+      d: "Sequencing"
+    },
+    correctAnswer: "b",
+    explanation: "Gel electrophoresis is used to separate DNA fragments based on their size, allowing for the analysis of DNA patterns.",
+    dotPoint: "6.2.6 - Gel electrophoresis"
+  },
+  {
+    question: "Which process involves the transfer of genetic material between organisms that are not sexually reproducing?",
+    answers: {
+      a: "Conjugation",
+      b: "Transformation",
+      c: "Transduction",
+      d: "All of the above"
+    },
+    correctAnswer: "d",
+    explanation: "Conjugation, transformation, and transduction are all processes by which genetic material can be transferred between organisms that are not reproducing sexually.",
+    dotPoint: "6.3.3 - Genetic transfer mechanisms"
+  },
+  {
+    question: "What is the primary goal of gene cloning?",
+    answers: {
+      a: "To create a genetically identical organism",
+      b: "To produce a large quantity of a specific gene or protein",
+      c: "To edit genes within an organism",
+      d: "To introduce new genes into an organism"
+    },
+    correctAnswer: "b",
+    explanation: "Gene cloning aims to produce multiple copies of a specific gene or protein, which can be used for research, medicine, or agriculture.",
+    dotPoint: "6.4.1 - Gene cloning"
   }
 ];
 
 let currentQuestionIndex = 0; // To keep track of the current question
+const performance = {}; // To track performance by dot point
 
 function showQuestion() {
   const quizContainer = document.getElementById('quiz');
@@ -129,10 +175,25 @@ function checkAnswer() {
 
   const userAnswer = selectedOption.value;
 
+  // Check if the answer is correct and provide feedback
   if (userAnswer === currentQuestion.correctAnswer) {
     feedbackContainer.innerHTML = `<p style="color: green;">Correct! ${currentQuestion.explanation}</p>`;
+    
+    // Update performance for the correct dot point
+    if (performance[currentQuestion.dotPoint]) {
+      performance[currentQuestion.dotPoint].correct++;
+    } else {
+      performance[currentQuestion.dotPoint] = { correct: 1, total: 1 };
+    }
   } else {
     feedbackContainer.innerHTML = `<p style="color: red;">Incorrect! ${currentQuestion.explanation}</p>`;
+    
+    // Update performance for the dot point with incorrect answer
+    if (performance[currentQuestion.dotPoint]) {
+      performance[currentQuestion.dotPoint].total++;
+    } else {
+      performance[currentQuestion.dotPoint] = { correct: 0, total: 1 };
+    }
   }
 
   document.getElementById('quiz').innerHTML += `<button id="next">Next Question</button>`;
@@ -145,8 +206,21 @@ function showNextQuestion() {
   if (currentQuestionIndex < quizQuestions.length) {
     showQuestion();
   } else {
-    document.getElementById('quiz').innerHTML = `<p>You've completed the quiz! Your score is shown below:</p>`;
+    showFeedback();
   }
+}
+
+function showFeedback() {
+  let feedbackHTML = "<p>Quiz Complete! Here's your performance by syllabus dot point:</p><ul>";
+  
+  for (const dotPoint in performance) {
+    const { correct, total } = performance[dotPoint];
+    const percentage = Math.round((correct / total) * 100);
+    feedbackHTML += `<li>${dotPoint}: ${correct} out of ${total} correct (${percentage}%)</li>`;
+  }
+
+  feedbackHTML += "</ul>";
+  document.getElementById('quiz').innerHTML = feedbackHTML;
 }
 
 showQuestion();
