@@ -95,7 +95,6 @@ const quizQuestions = [
     explanation: "Mitosis is a process of cell division that results in two identical daughter cells, and it does not contribute to genetic variation like meiosis or mutations.",
     dotPoint: "6.3.2 - Sources of genetic variation"
   },
-  // Additional questions
   {
     question: "What technique is used to separate DNA fragments by size?",
     answers: {
@@ -137,6 +136,13 @@ const quizQuestions = [
 let currentQuestionIndex = 0; // To keep track of the current question
 const performance = {}; // To track performance by dot point
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+}
+
 function showQuestion() {
   const quizContainer = document.getElementById('quiz');
   const currentQuestion = quizQuestions[currentQuestionIndex];
@@ -155,10 +161,12 @@ function showQuestion() {
     <div class="question">${currentQuestion.question}</div>
     <div class="answers">${answers.join('')}</div>
     <button id="submit">Submit Answer</button>
+    <button id="end">End Quiz</button>
     <div id="feedback"></div>
   `;
 
   document.getElementById('submit').addEventListener('click', checkAnswer);
+  document.getElementById('end').addEventListener('click', showFeedback);
 }
 
 function checkAnswer() {
@@ -202,12 +210,14 @@ function checkAnswer() {
 
 function showNextQuestion() {
   currentQuestionIndex++;
-
-  if (currentQuestionIndex < quizQuestions.length) {
-    showQuestion();
-  } else {
-    showFeedback();
+  
+  // Randomize questions if reaching the end
+  if (currentQuestionIndex >= quizQuestions.length) {
+    shuffle(quizQuestions);
+    currentQuestionIndex = 0;
   }
+
+  showQuestion();
 }
 
 function showFeedback() {
@@ -216,11 +226,13 @@ function showFeedback() {
   for (const dotPoint in performance) {
     const { correct, total } = performance[dotPoint];
     const percentage = Math.round((correct / total) * 100);
-    feedbackHTML += `<li>${dotPoint}: ${correct} out of ${total} correct (${percentage}%)</li>`;
+    feedbackHTML += `<li>${dotPoint}: ${correct} out of ${total} (${percentage}%)</li>`;
   }
 
   feedbackHTML += "</ul>";
   document.getElementById('quiz').innerHTML = feedbackHTML;
 }
 
+// Start the quiz
+shuffle(quizQuestions); // Shuffle questions at the start
 showQuestion();
