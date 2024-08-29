@@ -89,50 +89,64 @@ const quizQuestions = [
   }
 ];
 
-function buildQuiz() {
+let currentQuestionIndex = 0; // To keep track of the current question
+
+function showQuestion() {
   const quizContainer = document.getElementById('quiz');
-  const output = [];
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+  const answers = [];
 
-  quizQuestions.forEach((currentQuestion, questionNumber) => {
-    const answers = [];
-
-    for (letter in currentQuestion.answers) {
-      answers.push(
-        `<label>
-          <input type="radio" name="question${questionNumber}" value="${letter}">
-          ${letter} : ${currentQuestion.answers[letter]}
-        </label>`
-      );
-    }
-
-    output.push(
-      `<div class="question">${currentQuestion.question}</div>
-      <div class="answers">${answers.join('')}</div>`
+  for (let letter in currentQuestion.answers) {
+    answers.push(
+      `<label>
+        <input type="radio" name="question" value="${letter}">
+        ${letter} : ${currentQuestion.answers[letter]}
+      </label><br>`
     );
-  });
+  }
 
-  quizContainer.innerHTML = output.join('');
+  quizContainer.innerHTML = `
+    <div class="question">${currentQuestion.question}</div>
+    <div class="answers">${answers.join('')}</div>
+    <button id="submit">Submit Answer</button>
+    <div id="feedback"></div>
+  `;
+
+  document.getElementById('submit').addEventListener('click', checkAnswer);
 }
 
-function showResults() {
-  const answerContainers = document.querySelectorAll('.answers');
-  let numCorrect = 0;
+function checkAnswer() {
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+  const answerContainer = document.querySelector('.answers');
+  const selectedOption = document.querySelector('input[name=question]:checked');
 
-  quizQuestions.forEach((currentQuestion, questionNumber) => {
-    const answerContainer = answerContainers[questionNumber];
-    const selector = `input[name=question${questionNumber}]:checked`;
-    const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+  const feedbackContainer = document.getElementById('feedback');
 
-    if (userAnswer === currentQuestion.correctAnswer) {
-      numCorrect++;
-      answerContainer.style.color = 'green';
-    } else {
-      answerContainer.style.color = 'red';
-    }
-  });
+  if (!selectedOption) {
+    feedbackContainer.innerHTML = "<p>Please select an answer!</p>";
+    return;
+  }
 
-  document.getElementById('results').innerHTML = `${numCorrect} out of ${quizQuestions.length} correct`;
+  const userAnswer = selectedOption.value;
+
+  if (userAnswer === currentQuestion.correctAnswer) {
+    feedbackContainer.innerHTML = `<p style="color: green;">Correct! ${currentQuestion.explanation}</p>`;
+  } else {
+    feedbackContainer.innerHTML = `<p style="color: red;">Incorrect! ${currentQuestion.explanation}</p>`;
+  }
+
+  document.getElementById('quiz').innerHTML += `<button id="next">Next Question</button>`;
+  document.getElementById('next').addEventListener('click', showNextQuestion);
 }
 
-buildQuiz();
-document.getElementById('submit').addEventListener('click', showResults);
+function showNextQuestion() {
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex < quizQuestions.length) {
+    showQuestion();
+  } else {
+    document.getElementById('quiz').innerHTML = `<p>You've completed the quiz! Your score is shown below:</p>`;
+  }
+}
+
+showQuestion();
