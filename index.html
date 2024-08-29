@@ -185,3 +185,161 @@
         </div> 
 
     </div> 
+
+ 
+
+    <script> 
+
+        // Array of questions, answers, and explanations 
+
+        const quiz =  
+
+[ 
+
+  { 
+
+    "question": "What is the first step in developing a scientific investigation?", 
+
+    "options": [ 
+
+      "a) Conducting an experiment", 
+
+      "b) Developing a hypothesis", 
+
+      "c) Collecting data", 
+
+      "d) Analysing results" 
+
+    ], 
+
+    "answer": "b", 
+
+    "explanation": "The first step in scientific investigation is developing a hypothesis to be tested." 
+
+  }, 
+
+  { 
+
+    "question": "In a valid experimental method, the independent variable is:", 
+
+    "options": [ 
+
+      "a) The variable that is measured", 
+
+      "b) The variable that is kept constant", 
+
+      "c) The variable that is changed", 
+
+      "d) The variable that is compared" 
+
+    ], 
+
+    "answer": "c", 
+
+    "explanation": "The independent variable is the one that is intentionally changed in an experiment." 
+
+  } 
+
+] 
+
+ 
+
+; 
+
+ 
+
+        // Function to show the quiz and hide the title page 
+
+        function startQuiz() { 
+
+            document.getElementById('title-page').style.display = 'none'; 
+
+            document.getElementById('quiz-container').style.display = 'block'; 
+
+            loadQuestion(); 
+
+        } 
+
+ 
+
+        // Function to load a new question 
+
+        function loadQuestion() { 
+
+            const randomIndex = Math.floor(Math.random() * quiz.length); 
+
+            const questionData = quiz[randomIndex]; 
+
+ 
+
+            document.getElementById('question').innerText = questionData.question; 
+
+ 
+
+            const answerButtons = document.querySelectorAll('.answer-button'); 
+
+            answerButtons.forEach((btn, index) => { 
+
+                btn.innerText = questionData.options[index]; 
+
+                btn.disabled = false; 
+
+                btn.onclick = function() { 
+
+                    checkAnswer(index, questionData); 
+
+                }; 
+
+            }); 
+
+ 
+
+            document.getElementById('feedback').innerText = ""; 
+
+            document.getElementById('next-button').style.display = 'none'; 
+
+        } 
+
+ 
+
+        // Function to check the selected answer 
+
+        function checkAnswer(selectedIndex, questionData) { 
+
+            const selectedLetter = String.fromCharCode(97 + selectedIndex); // Get 'a', 'b', 'c', 'd' 
+
+            if (selectedLetter === questionData.answer) { 
+
+                document.getElementById('feedback').innerText = "Correct! " + questionData.explanation; 
+
+            } else { 
+
+                document.getElementById('feedback').innerText = "Incorrect! The correct answer is " + questionData.answer + ". " + questionData.explanation; 
+
+            } 
+
+ 
+
+            // Disable buttons after selection 
+
+            document.querySelectorAll('.answer-button').forEach(btn => btn.disabled = true); 
+
+ 
+
+            // Show the "Next Question" button 
+
+            document.getElementById('next-button').style.display = 'block'; 
+
+        } 
+
+ 
+
+        // Initial load of the title page 
+
+        document.getElementById('title-page').style.display = 'block'; 
+
+    </script> 
+
+</body> 
+
+</html> 
